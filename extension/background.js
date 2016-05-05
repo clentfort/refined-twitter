@@ -6,7 +6,7 @@ chrome.webRequest.onBeforeRequest.addListener(details => {
 	}
 
 	// if the URL is for an intent, don't change the URL
-	if (/twitter.com\/intent\//.test(details.url)) {
+	if (/twitter.com\/(intent|share)/.test(details.url)) {
 		return;
 	}
 
