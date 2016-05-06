@@ -54,6 +54,47 @@ function registerShortcuts(username) {
 			$('button[data-testid="dmComposerSendButton"]').click();
 		}
 	});
+
+	Mousetrap.bind('j', event => {
+		scrollToTweet(event);
+	});
+
+	Mousetrap.bind('k', event => {
+		scrollToTweet(event);
+	});
+}
+
+function scrollToTweet(event) {
+	const navHeight = $('nav').clientHeight;
+	const tweets = document.querySelectorAll('._222QxFjc[role="row"]');
+	const currentTop = window.scrollY;
+	const keyCode = event.charCode;
+	let scrollTarget = 0;
+
+	const tweetIsBelowNav = offset => {
+		return offset + navHeight > currentTop;
+	};
+
+	Array.from(tweets).some((tweet, index) => {
+		// if we're scrolling down, grab the offset of the tweet below the nav
+		if (keyCode === 106) {
+			scrollTarget = tweet.offsetTop + navHeight;
+		}
+
+		// if we're scrolling up and on the first two items scroll to 0
+		if (keyCode === 107 && index <= 1) {
+			scrollTarget = 0;
+		}
+
+		// if we're scrolling up, grab the offset of the tweet before last
+		if (keyCode === 107 && index > 1) {
+			scrollTarget = tweets[index - 2].offsetTop + navHeight;
+		}
+
+		return tweetIsBelowNav(tweet.offsetTop);
+	});
+
+	window.scrollTo(0, scrollTarget);
 }
 
 function init() {
