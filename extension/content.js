@@ -2,6 +2,21 @@
 /* globals Mousetrap */
 const $ = document.querySelector.bind(document);
 // const $$ = document.querySelectorAll.bind(document);
+const languages = {
+	en: {
+		close: 'Close'
+	},
+	de: {
+		close: `Schließen`
+	}
+};
+let language = languages.en;
+
+function setLanguage(code) {
+	if (languages[code]) {
+		language = languages[code];
+	}
+}
 
 function registerShortcuts(username) {
 	Mousetrap.bind('n', () => {
@@ -40,8 +55,11 @@ function registerShortcuts(username) {
 	});
 
 	Mousetrap.bindGlobal('esc', () => {
-		if (window.location.pathname === '/compose/tweet') {
-			$('button[aria-label="Close"]').click();
+		if (
+			window.location.pathname === '/compose/tweet' ||
+			/^\/i\/status\/\d+\/photo\/\d+/.test(window.location.pathname)
+		) {
+			$(`button[aria-label="${language.close}"]`).click();
 		}
 	});
 
@@ -59,7 +77,9 @@ function registerShortcuts(username) {
 function init() {
 	const state = JSON.parse($('.___iso-state___').dataset.state).initialState;
 	const username = state.settings.data.screen_name;
+	const languageCode = state.settings.data.language;
 
+	setLanguage(languageCode);
 	registerShortcuts(username);
 }
 
